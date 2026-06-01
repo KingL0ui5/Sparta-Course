@@ -89,12 +89,7 @@ db.institute.insertMany([{"course": "Data Engineering"}, {"course": "Data Analys
 Recieve two object IDs for example
 ![insertMany screenshot example](images/insertManyeg.png)
 
-To see your documents in a collection, run 
-```mongosh
-db.institute.find()
-db.institute.find({course: "Data Engineering"})
-db.institute.find({_id: ObjectId("6a1d8fd64c7cbf914caa168b")})
-```
+
 
 
 ### Validation 
@@ -126,3 +121,185 @@ db.createCollection("myinfo", {
     }
 })
 ```
+
+For example, 
+![Example of a successful input after validation](images/ValidationSuccess.png)
+
+![Example of an unsucessful validation](images/ValidationFailure.png)
+
+### Searching 
+
+To see your documents in a collection, run 
+```mongosh
+db.institute.find()
+db.institute.find({course: "Data Engineering"})
+db.institute.find({_id: ObjectId("6a1d8fd64c7cbf914caa168b")})
+```
+
+
+For example, creating the collection below 
+```mongosh
+db.createCollection("films", {
+    validator: {
+       $jsonSchema: {
+          bsonType: "object", 
+          title: "my favourite films validation", 
+          required: ["name", "release_date"],
+          properties: {
+             name: {
+                bsonType: "string",
+                description: "'name' is a required string"
+             },
+             release_date: {
+                bsonType: "date", 
+                description: "'release_date' is mandatory and must be a valid datetime" 
+             }
+          }
+       }
+    }
+ })
+
+// inserting some lines 
+
+db.films.insertMany([
+   { 
+      name: "The Lord of the Rings: The Fellowship of the Ring", 
+      release_date: new Date("2001-12-19") 
+   },
+   { 
+      name: "The Shawshank Redemption", 
+      release_date: new Date("1994-10-14") 
+   },
+   { 
+      name: "The Green Mile", 
+      release_date: new Date("1999-12-10") 
+   },
+   { 
+      name: "Forrest Gump", 
+      release_date: new Date("1994-07-06") 
+   },
+   { 
+      name: "Django Unchained", 
+      release_date: new Date("2012-12-25") 
+   }
+])
+
+db.films.insertOne({
+    name: "The Matrix",
+    release_date: new Date("1999-03-31")
+ })
+
+```
+
+returns 
+```mongosh 
+{ ok: 1 }
+
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6a1da4514c7cbf914caa168f'),
+    '1': ObjectId('6a1da4514c7cbf914caa1690'),
+    '2': ObjectId('6a1da4514c7cbf914caa1691'),
+    '3': ObjectId('6a1da4514c7cbf914caa1692'),
+    '4': ObjectId('6a1da4514c7cbf914caa1693')
+  }
+}
+
+{
+  acknowledged: true,
+  insertedId: ObjectId('6a1da4d24c7cbf914caa1694')
+}
+
+```
+running seperately, 
+```mongosh
+db.films.find({name: "Forrest Gump"})
+db.films.find({_id: ObjectId("6a1da4514c7cbf914caa168f")})
+```
+returns 
+```mongosh
+[
+  {
+    _id: ObjectId('6a1da4514c7cbf914caa1692'),
+    name: 'Forrest Gump',
+    release_date: ISODate('1994-07-06T00:00:00.000Z')
+  }
+]
+
+[
+  {
+    _id: ObjectId('6a1da4514c7cbf914caa168f'),
+    name: 'The Lord of the Rings: The Fellowship of the Ring',
+    release_date: ISODate('2001-12-19T00:00:00.000Z')
+  }
+]
+```
+
+Though not exercised here, the `insert()` acts as either `insertMany` or `insertOne` depending on the input parameters.
+
+
+
+### Updates
+
+You can update an existing document, for example using `db.collection.updateOne()`. This requires a filter and an update operator as arguments. 
+
+For example 
+```mongosh
+db.films.updateOne(
+    {name: "The Matrix"},
+    {$set: {genre: "Sci-Fi"}}
+)
+
+// returning, 
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+```
+
+You can also update many documents. To find all the films released before the year 2000, and label them as classics you run the below: 
+```mongosh
+db.films.updateMany(
+    {release_date: {$lt: new Date("2000-01-01")}},
+   {$set: {status: "Classic" }}
+)
+
+\\ returning, 
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0
+}
+```
+
+
+### Deleting Documents
+
+You can run the below to delete a document. With similar syntax for `deleteMany` and `delete` as before.
+```mongosh
+db.films.deleteOne({name: "Django Unchained"})
+
+// returning 
+{ acknowledged: true, deletedCount: 1 }
+```
+
+
+### Embedding and Referencing
+- Referencing is the process of performing relational lookups on different collections. 
+- Embedding removes the related data into a single table, in favour of having several related tables.
+
+Embedding makes the most sense when data is regularly accessed together. Ie in a database of online orders, you would 
+be unlikely to look up a customer without also looking up their address. 
+
+![Embedding example (source: https://www.geeksforgeeks.org/mongodb/embedded-vs-referenced-documents-in-mongodb/)](images/embedding.png)
+
+Embedding works for 1-to-1 relationships, and 1-to-Many relationships where the Many side belongs only to the parent and does not grow infinitely. 
+
+Referencing can represent all data relationships. <br>
+![Referencing example (source: https://www.geeksforgeeks.org/mongodb/embedded-vs-referenced-documents-in-mongodb/)](images/referencing.png)
