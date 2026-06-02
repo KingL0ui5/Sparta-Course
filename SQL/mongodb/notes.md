@@ -9,7 +9,7 @@ NoSQL - NotOnlySQL
  - Different forms - key:values, documents, graph, column
 
 
- ## ACID in sql
+ ##  ACID in sql
 Properties of a reliable transaction 
 - Atomic. A transaction is treated as a single, indivisible unit. If one step fails, the whole thing fails.
 - Consistency. Any data written must be valid according to defined rules. 
@@ -17,12 +17,12 @@ Properties of a reliable transaction
 - Durability. Once a transaction has been committed, it remains forever.
 
 
-## MongoDB Intro 
+##  MongoDB Intro 
 
 A document like database that stores JSON-like documents, which allows you to store data with flexible schema and provides querying and aggregation tools for access and analysis. 
 It uses BJSON (Binary-JSON)
 
-### Advantages 
+###  Advantages 
 - Document Oriented Storage
 - High level of polymorphism - not every row must have the same columns (which is the case in SQL). There can be null fields 
 - There is no translation required quite often 
@@ -33,7 +33,7 @@ It uses BJSON (Binary-JSON)
 
 Vendor Locking: The state of being locked into a particular provider contractually or due to infrastructure
 
-### Disadvantages 
+###  Disadvantages 
 - High memory usage and data redundancy 
 - Can be inconsistent 
 - Unsupported transactions
@@ -58,7 +58,7 @@ Vendor Locking: The state of being locked into a particular provider contractual
 note: usually worth changing the default port to help with security
 
 
-##  MongoShell 
+##   MongoShell 
 
 By default, it will open with test> 
 To create a database: 
@@ -303,3 +303,21 @@ Embedding works for 1-to-1 relationships, and 1-to-Many relationships where the 
 
 Referencing can represent all data relationships. <br>
 ![Referencing example (source: https://www.geeksforgeeks.org/mongodb/embedded-vs-referenced-documents-in-mongodb/)](images/referencing.png)
+
+
+## Python
+### Virtual Environments 
+An isolated, self-contained folder that houses specific program versions and its own version dependencies.
+- Multiple projects may require different versions of the same tools
+- It makes projects more portable and reproducible 
+- It keeps your native python installation clean 
+- Allows testing with different Python versions
+
+### Libraries 
+A group of modules that contain functions, classes and methods to perform common tasks
+
+### Why Python 
+- The libraries are extensive 
+- Easy to learn use and read 
+- Large community 
+- Versatile
