@@ -25,29 +25,47 @@ def save_starships():
             collection = db['starships']
             collection.insert_many(starships_raw)
             print("Successfully saved starships")
-    else:
-        print("Failed to save starships")
 
 
 
 class Starships:
     def __init__(self):
         self.starships = db['starships']
+        self.characters = db['characters']
 
     def get_pilot_id(self):
         """ Getter for pilot id """
-        return db.self.starships.distinct('pilot_id')
+        return self.starships.distinct('pilot_id')
 
-    # replace pilots and insert ids
     def replace_pilots(self):
-        """ Replaces pilot ids with new ids """
-        db.self.starships.find_one_and_replace(
-            {'pilot_id': {'$in': self.get_pilot_id()}}, )
+        """ Replaces pilot urls with new ObjectIds from characters """
+        transformed_ships = []
+
+        for document in self.starships.find({"pilot_id": {"$exists": True}}):
+            ship = dict(document)
+            pilot_url = ship.get('pilot_id')
+
+            character = self.characters.find_one({"url": pilot_url})
+
+            if character:
+                ship['pilot_id'] = character['_id']
+                transformed_ships.append(ship)
+
+        return transformed_ships
+
 
     # add transformed data to your mongo database
-    def add_transfomred_data(self):
+    def add_transformed_data(self, updated_starships):
         """ Adds new data to database """
-        pass
+        count = 0
+        for ship in updated_starships:
+            if 'pilot_id' in ship:
+                self.starships.update_one(
+                    {"_id": ship['_id']},
+                    {"$set": {"pilot_id": ship['pilot_id']}}
+                )
+                count += 1
+        return True
 
 
 # - Use functions
@@ -56,5 +74,8 @@ class Starships:
 # - Do the same for another API (e.g. pokemon api or similar)
 
 if __name__ == '__main__':
+    save_starships()
     test = Starships()
-    test.get_pilot_id()
+    modified_data = test.replace_pilots()
+    test.add_transformed_data(modified_data)
+    print(test.get_pilot_id())
