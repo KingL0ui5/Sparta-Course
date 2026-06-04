@@ -1,3 +1,14 @@
+"""
+Note: If you cannot create your own bucket, use the "data-eng-resources" bucket. Make sure to use the naming convention "se-data-folder/..." when you upload data.
+
+Do not try to delete the bucket!
+
+- Create a bucket with boto3
+- Read data from the "data-eng-resources" bucket
+- Upload data to your bucket
+- Delete data from your bucket
+- Delete your bucket (if you were able to make your own)
+"""
 import boto3
 import pprint as pp 
 from botocore.exceptions import ClientError
