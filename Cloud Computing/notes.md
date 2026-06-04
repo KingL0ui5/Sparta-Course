@@ -1,4 +1,12 @@
 # Cloud Computing
+- on demand 
+- pay as you go 
+- often has a cloud service platform (GUI)
+- The cloud provider owns, maintains and manages hardware and networking and physical security.
+
+multi-tenant-cloud - multiple tenants share the same physical servers (cost effective, zero maintainance, instant scalability but the noisy neighbor effect, less customisation)
+single-tenant-cloud - a customer has access to their own server (expensive, slower to scale, higher maintainence but max security and privacy, consistent perfomrance and complete control)
+
 Some examples of services:
 ![](images/cloudservices.png)
 ## Multicloud
@@ -67,3 +75,56 @@ You must create an SSH (secure shell) key pair to access a protected resource.
 An instance is a virtual machine
 
 NOTE: You can use gitbash to run bash commands on a windows system 
+
+
+To access your instance you can run 
+```zsh
+ssh -i ~/.ssh/[Key pair path].pem [OS Instance]@[IP Address]
+```
+
+If you need to push files to the instance, 
+```zsh
+scp -i ~/.ssh/[ssh key path].pem /[path to resource] [OS Instance]@[IP Address]:/[upload location path]
+```
+
+
+## S3 (Simple Storage Service)
+
+- It is secure 
+- Durable 
+- Scalable
+
+Data is stored in objects - (data + metadata) with metadata as key value pairs
+Objects are the fundamental entities stored in Amazon S3. Objects are stored in buckets. 
+
+Objects in the bucket are stored at the same level. The directory is a visual illusion.
+
+S3 is basically a place to store raw data.
+S3 + another system is a data lake
+
+Industry standard is not to use CRUD on the console
+
+Endpoints: An endpoint is the exact location where an API receives requests and sends back responses.
+
+When you upload a file to an S3 bucket, AWS generates a unique HTTP web address for that object. It is good because you can offload compute server load, scale easily, be more cost effective, have better availability globally, and provide secure, temporary access.
+
+You store your keys in the location `~/.aws/credentials`
+
+### Storage Classes 
+#### Standard 
+Default class: high availability, low latency and high durabilty. It is the most expensive tier for storage, 
+but the cheapest for accessing data. 
+
+#### Intelligent Tiering 
+Moves your data automatically between frequent and infrequent access tiers based on usage patterns. 
+
+#### Standard-Infrequent Access 
+This class provides the same low latency and high throughput as Standard, but with a lower storage cost and a higher retrieval fee.
+
+#### One Zone-Infrequent Access
+Other classes store data across at least three Availability Zones (AZs), this stores data in a single AZ.
+It costs less but is less redundant.
+
+#### Glacier Class
+Extremely low storage costs but retrieval times are really long with higher costs.
+
